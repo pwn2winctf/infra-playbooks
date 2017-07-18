@@ -1,0 +1,74 @@
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - openvpn
+    - openssl
+    - ufw
+
+- name: Setup openvpn
+  template:
+    src: "server.conf.j2"
+    dest: "/etc/openvpn/server.conf"
+
+- name: Generate DH parameter
+  command: openssl dhparam -out /etc/openvpn/dh{{ dh_bits }}.pem {{ dh_bits }}
+  args:
+    creates: "/etc/openvpn/dh{{ dh_bits }}.pem"
+
+- name: Copy openvpn service
+  copy:
+    force: no
+    remote_src: yes
+    src: "/lib/systemd/system/openvpn@.service"
+    dest: "/etc/systemd/system/openvpn@server.service"
+
+- name: Disable LimitNPROC (does not work in container)
+  lineinfile:
+    state: absent
+    regexp: '^LimitNPROC='
+    path: "/etc/systemd/system/openvpn@server.service"
+
+- name: Enable openvpn service
+  systemd:
+    name: "openvpn@server"
+    enabled: yes
+
+- name: Setup container network
+  template:
+    src: "container_net.cfg.j2"
+    dest: "/etc/network/interfaces.d/{{ container_net_ifc }}.cfg"
+
+- name: Enable IPv4 forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Masquerade VPN clients to container network
+  blockinfile:
+    path: "/etc/ufw/before.rules"
+    content: |
+      *nat
+      :POSTROUTING ACCEPT [0:0]
+      -A POSTROUTING -s {{ vpn_client_net | ipaddr('network') }}/{{ vpn_client_net | ipaddr('prefix') }} -o {{ container_net_ifc }} -j MASQUERADE
+      COMMIT
+
+- name: Change default forward policy
+  lineinfile:
+    regexp: '^DEFAULT_FORWARD_POLICY='
+    line: 'DEFAULT_FORWARD_POLICY="ACCEPT"'
+    path: "/etc/default/ufw"
+
+- name: Allow openvpn traffic
+  ufw:
+    rule: allow
+    port: "{{ openvpn_container_port }}"
+    proto: udp
+
+- name: Enable UFW
+  ufw:
+    state: enabled

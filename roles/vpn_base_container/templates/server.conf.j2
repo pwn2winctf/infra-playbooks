@@ -1,0 +1,26 @@
+port {{ openvpn_container_port }}
+proto udp
+dev tun
+
+ca ca.crt
+cert team.crt
+key team.key
+dh dh{{ dh_bits }}.pem
+
+server {{ vpn_client_net | ipaddr('network') }} {{ vpn_client_net | ipaddr('netmask') }}
+
+keepalive 120 240
+
+user nobody
+group nogroup
+
+persist-key
+persist-tun
+
+client-cert-not-required
+plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so login
+
+cipher AES-128-CBC
+comp-lzo no
+
+push "route {{ container_net | ipaddr('network') }} {{ container_net | ipaddr('netmask') }}"

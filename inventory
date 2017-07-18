@@ -1,0 +1,2 @@
+localhost ansible_connection=local
+vpn-base-container ansible_connection=lxd

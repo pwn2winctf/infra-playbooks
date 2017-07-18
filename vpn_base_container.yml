@@ -1,0 +1,19 @@
+- hosts: localhost
+  tasks:
+    - name: Create vpn-base-container
+      lxd_container:
+        name: vpn-base-container
+        state: started
+        source:
+          type: image
+          mode: pull
+          server: https://images.linuxcontainers.org
+          protocol: lxd
+          alias: ubuntu/xenial/amd64
+        wait_for_ipv4_addresses: yes
+
+- hosts: vpn-base-container
+  gather_facts: no
+  roles:
+    - base_container
+    - vpn_base_container
