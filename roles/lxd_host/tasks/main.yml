@@ -1,0 +1,30 @@
+- name: Add LXD stable PPA
+  apt_repository:
+    repo: 'ppa:ubuntu-lxc/lxd-stable'
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python-pexpect
+    - zfsutils-linux
+    - lxd
+
+- name: Initialize LXD
+  expect:
+    creates: "/var/lib/lxd/disks/default.img"
+    command: lxd init
+    responses:
+      Do you want to configure a new storage pool: "yes"
+      Name of the new storage pool: "default"
+      Name of the storage backend to use: "zfs"
+      Create a new ZFS pool: "yes"
+      Would you like to use an existing block device: "no"
+      Size in GB of the new loop device: "{{ zfs_pool_size }}"
+      Would you like LXD to be available over the network: "no"
+      Would you like stale cached images to be updated automatically: "yes"
+      Would you like to create a new network bridge: "{{ create_lxdbr0 | bool | ternary('yes', 'no') }}"
+      What should the new bridge be called: lxdbr0
+      What IPv4 address should be used: auto
+      What IPv6 address should be used: none

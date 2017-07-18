@@ -1,10 +1,9 @@
 - name: Install Python
-  raw: apt install -y python-minimal
+  raw: apt update && apt install -y python-minimal
 
 - name: Upgrade system
   apt:
     upgrade: dist
-    update_cache: yes
 
 - name: Gather facts
   setup:
