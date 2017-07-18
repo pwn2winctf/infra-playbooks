@@ -35,10 +35,10 @@
     name: "openvpn@server"
     enabled: yes
 
-- name: Setup container network
+- name: Setup networks
   template:
-    src: "container_net.cfg.j2"
-    dest: "/etc/network/interfaces.d/{{ container_net_ifc }}.cfg"
+    src: "interfaces.j2"
+    dest: "/etc/network/interfaces"
 
 - name: Enable IPv4 forward
   sysctl:

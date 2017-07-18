@@ -1,0 +1,13 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto {{ lxdbridge_ifc }}
+iface {{ lxdbridge_ifc }} inet dhcp
+
+auto {{ container_net_ifc }}
+iface {{ container_net_ifc }} inet static
+	address {{ container_net }}

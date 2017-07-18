@@ -1,2 +1,4 @@
 dh_bits: 2048
+
+lxdbridge_ifc: "eth0"
 container_net_ifc: "eth1"
