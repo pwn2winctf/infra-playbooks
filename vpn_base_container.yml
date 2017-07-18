@@ -15,5 +15,5 @@
 - hosts: vpn-base-container
   gather_facts: no
   roles:
-    - base_container
+    - ansible_prereq
     - vpn_base_container
