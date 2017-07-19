@@ -1,0 +1,5 @@
+- name: Publish LXD image
+  command: "lxc publish --force --alias '{{ name }}' '{{ name }}'"
+
+- name: Export LXD image
+  command: "lxc image export '{{ name }}' images/'{{ name }}'.tar.gz"

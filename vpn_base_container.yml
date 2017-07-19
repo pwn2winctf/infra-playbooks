@@ -1,19 +1,15 @@
 - hosts: localhost
-  tasks:
-    - name: Create vpn-base-container
-      lxd_container:
-        name: vpn-base-container
-        state: started
-        source:
-          type: image
-          mode: pull
-          server: https://images.linuxcontainers.org
-          protocol: lxd
-          alias: ubuntu/xenial/amd64
-        wait_for_ipv4_addresses: yes
+  roles:
+    - role: create_container
+      name: "vpn-base-container"
 
 - hosts: vpn-base-container
   gather_facts: no
   roles:
     - ansible_prereq
     - vpn_base_container
+
+- hosts: localhost
+  roles:
+    - role: publish_image
+      name: "vpn-base-container"
