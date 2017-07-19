@@ -14,4 +14,4 @@ openvpn_container_port: 1194
 first_public_port: 10000
 
 # First team VLAN
-first_vlan: 1
+first_vlan: 0
