@@ -26,6 +26,14 @@
     chdir: "{{ vpn_ca_dir }}"
   become_user: "{{ vpn_ca_user }}"
 
+- name: Enable IPv4 forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
 - name: Install deploy_team script
   template:
     src: "deploy_team.j2"
