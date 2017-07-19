@@ -1,0 +1,26 @@
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - easy-rsa
+
+- name: Make CA dir
+  command: "make-cadir '{{ vpn_ca_dir }}'"
+  args:
+    creates: "{{ vpn_ca_dir }}"
+  become_user: "{{ vpn_ca_user }}"
+
+- name: Setup CA vars
+  template:
+    src: "vars.j2"
+    dest: "{{ vpn_ca_dir }}/vars"
+    owner: "{{ vpn_ca_user }}"
+    group: "{{ vpn_ca_group }}"
+
+- name: Create CA
+  shell: ". ./vars; ./clean-all && ./pkitool --initca"
+  args:
+    creates: "{{ vpn_ca_dir }}/keys"
+    chdir: "{{ vpn_ca_dir }}"
+  become_user: "{{ vpn_ca_user }}"

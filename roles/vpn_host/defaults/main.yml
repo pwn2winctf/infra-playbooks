@@ -1,0 +1,3 @@
+vpn_ca_user: "ubuntu"
+vpn_ca_group: "ubuntu"
+vpn_ca_dir: "/home/ubuntu/openvpn-ca"

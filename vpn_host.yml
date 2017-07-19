@@ -4,3 +4,4 @@
   roles:
     - ansible_prereq
     - { role: lxd_host, create_lxdbr0: yes }
+    - vpn_host
