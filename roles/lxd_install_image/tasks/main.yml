@@ -1,0 +1,20 @@
+- name: Check if image is installed
+  shell: "lxc image list --format csv '{{ name }}' | wc -l"
+  register: image_count
+  changed_when: no
+
+- name: Copy image
+  copy:
+    src: "{{ playbook_dir }}/images/{{ name }}.tar.gz"
+    dest: "{{ lxd_image_tmp }}/"
+  when: "image_count.stdout | int == 0"
+
+- name: Import image
+  command: "lxc image import --alias '{{ name }}' '{{ lxd_image_tmp }}/{{ name }}.tar.gz'"
+  when: "image_count.stdout | int == 0"
+
+- name: Remove temporary file
+  file:
+    state: absent
+    path: "{{ lxd_image_tmp }}/{{ name }}.tar.gz"
+  when: "image_count.stdout | int == 0"

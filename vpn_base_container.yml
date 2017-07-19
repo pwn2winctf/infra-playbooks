@@ -1,6 +1,6 @@
 - hosts: localhost
   roles:
-    - role: create_container
+    - role: lxd_create_container
       name: "vpn-base-container"
 
 - hosts: vpn-base-container
@@ -11,5 +11,5 @@
 
 - hosts: localhost
   roles:
-    - role: publish_image
+    - role: lxd_publish_image
       name: "vpn-base-container"

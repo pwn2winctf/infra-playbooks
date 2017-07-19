@@ -2,6 +2,12 @@
   become: yes
   gather_facts: no
   roles:
-    - ansible_prereq
-    - { role: lxd_host, create_lxdbr0: yes }
+    - role: ansible_prereq
+
+    - role: lxd_host
+      create_lxdbr0: yes
+
+    - role: lxd_install_image
+      name: "vpn-base-container"
+
     - vpn_host
