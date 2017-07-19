@@ -37,7 +37,7 @@ public_port="$(($FIRST_PUBLIC_PORT + $N))"
 
 container_ip=""
 while [[ -z "$container_ip" ]]; do
-	container_ip="$(lxc list --format json "team$N" | jq -r '.[].state.network.eth0.addresses | .[] | select(.family=="inet") | .address')"
+	container_ip="$(lxc list --format json "^team$N\$" | jq -r '.[].state.network.eth0.addresses | .[] | select(.family=="inet") | .address')"
 done
 
 sudo iptables -t nat -A PREROUTING -p udp -m udp --dport "${public_port}" -j DNAT --to-destination "${container_ip}:${INTERNAL_PORT}"

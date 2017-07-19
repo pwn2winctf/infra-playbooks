@@ -1,5 +1,5 @@
 - name: Check if image is installed
-  shell: "lxc image list --format csv '{{ name }}' | wc -l"
+  shell: "lxc image list --format csv '^{{ name }}$' | wc -l"
   register: image_count
   changed_when: no
 
