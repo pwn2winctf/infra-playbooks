@@ -24,7 +24,8 @@
       Size in GB of the new loop device: "{{ zfs_pool_size }}"
       Would you like LXD to be available over the network: "no"
       Would you like stale cached images to be updated automatically: "yes"
-      Would you like to create a new network bridge: "{{ create_lxdbr0 | bool | ternary('yes', 'no') }}"
-      What should the new bridge be called: lxdbr0
-      What IPv4 address should be used: auto
-      What IPv6 address should be used: none
+      Would you like to create a new network bridge: "{{ lxdbr_create | bool | ternary('yes', 'no') }}"
+      What should the new bridge be called: "lxdbr0"
+      What IPv4 address should be used: "{{ lxdbr_net }}"
+      Would you like LXD to NAT IPv4 traffic on your bridge: "no"
+      What IPv6 address should be used: "none"

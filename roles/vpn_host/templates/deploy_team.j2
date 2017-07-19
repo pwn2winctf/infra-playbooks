@@ -1,0 +1,44 @@
+#!/bin/bash -e
+FIRST_PUBLIC_PORT="{{ first_public_port }}"
+INTERNAL_PORT="{{ openvpn_container_port }}"
+VPN_CONTAINER_GW="{{ vpn_container_net | ipaddr('address') }}"
+FIRST_VLAN="{{ first_vlan }}"
+EXT_IFACE="ens3"
+
+if [[ "$#" != 3 ]]; then
+        echo "usage: $0 N username password"
+        exit 1
+fi
+
+N="$1"
+username="$2"
+password="$3"
+
+cd "{{ vpn_ca_dir }}"
+. ./vars
+if [[ ! -f "keys/team$N.crt" ]]; then
+	./pkitool --server "team$N"
+fi
+
+lxc init vpn-base-container "team$N"
+
+lxc file push "keys/ca.crt" "team$N/etc/openvpn/"
+lxc file push "keys/team$N.key" "team$N/etc/openvpn/team.key"
+lxc file push "keys/team$N.crt" "team$N/etc/openvpn/team.crt"
+
+lxc config device add "team$N" "eth1" nic nictype="macvlan" name="eth1" parent="$EXT_IFACE" vlan="$(($FIRST_VLAN + $N))"
+
+lxc start "team$N"
+
+lxc exec "team$N" -- chown -R root:root /etc/openvpn
+lxc exec "team$N" -- useradd -s /usr/sbin/nologin -p $(openssl passwd -1 "$password") "$username"
+
+public_port="$(($FIRST_PUBLIC_PORT + $N))"
+
+container_ip=""
+while [[ -z "$container_ip" ]]; do
+	container_ip="$(lxc list --format json "team$N" | jq -r '.[].state.network.eth0.addresses | .[] | select(.family=="inet") | .address')"
+done
+
+sudo iptables -t nat -A PREROUTING -p udp -m udp --dport "${public_port}" -j DNAT --to-destination "${container_ip}:${INTERNAL_PORT}"
+sudo iptables -t nat -A POSTROUTING -d "${container_ip}/32" -p udp -m udp --dport "${INTERNAL_PORT}" -j SNAT --to-source "${VPN_CONTAINER_GW}"

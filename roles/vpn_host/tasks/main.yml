@@ -4,6 +4,7 @@
     state: latest
   with_items:
     - easy-rsa
+    - jq
 
 - name: Make CA dir
   command: "make-cadir '{{ vpn_ca_dir }}'"
@@ -24,3 +25,11 @@
     creates: "{{ vpn_ca_dir }}/keys"
     chdir: "{{ vpn_ca_dir }}"
   become_user: "{{ vpn_ca_user }}"
+
+- name: Install deploy_team script
+  template:
+    src: "deploy_team.j2"
+    dest: "{{ home_dir }}/deploy_team"
+    mode: 0755
+    owner: "{{ vpn_ca_user }}"
+    group: "{{ vpn_ca_group }}"

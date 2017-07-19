@@ -1,3 +1,17 @@
+# Network from which VPN clients will acquire IP addresses
 vpn_client_net: 10.133.80.1/24
+
+# Network containing challenge containers
 container_net: 10.133.64.1/20
+
+# Network containing VPN containers
+vpn_container_net: 172.16.0.1/16
+
+# Port used internally by VPN containers
 openvpn_container_port: 1194
+
+# First public VPN port
+first_public_port: 10000
+
+# First team VLAN
+first_vlan: 1

@@ -5,9 +5,10 @@
     - role: ansible_prereq
 
     - role: lxd_host
-      create_lxdbr0: yes
+      lxdbr_create: yes
+      lxdbr_net: "{{ vpn_container_net }}"
 
     - role: lxd_install_image
       name: "vpn-base-container"
 
-    - vpn_host
+    - role: vpn_host
