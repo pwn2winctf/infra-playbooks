@@ -21,6 +21,5 @@ client-cert-not-required
 plugin /usr/lib/openvpn/openvpn-plugin-auth-pam.so login
 
 cipher AES-128-CBC
-comp-lzo no
 
 push "route {{ container_net | ipaddr('network') }} {{ container_net | ipaddr('netmask') }}"
