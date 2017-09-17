@@ -5,14 +5,16 @@ VPN_CONTAINER_GW="{{ vpn_container_net | ipaddr('address') }}"
 FIRST_VLAN="{{ first_vlan }}"
 EXT_IFACE="ens3"
 
-if [[ "$#" != 3 ]]; then
-        echo "usage: $0 N username password"
+if [[ "$#" != 2 ]]; then
+        echo "usage: $0 N password"
         exit 1
 fi
 
 N="$1"
-username="$2"
-password="$3"
+password="$2"
+
+username="team-$N"
+public_port="$(($FIRST_PUBLIC_PORT + $N))"
 
 cd "{{ vpn_ca_dir }}"
 . ./vars
@@ -37,8 +39,6 @@ if [[ $(lxc list --format json "^team-$N\$" | jq length) == 0 ]]; then
 	lxc exec "team-$N" -- chown -R root:root /etc/openvpn
 	lxc exec "team-$N" -- useradd -s /usr/sbin/nologin -p $(openssl passwd -1 "$password") "$username"
 fi
-
-public_port="$(($FIRST_PUBLIC_PORT + $N))"
 
 container_ip=""
 while [[ -z "$container_ip" ]]; do
