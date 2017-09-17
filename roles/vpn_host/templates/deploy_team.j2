@@ -53,3 +53,5 @@ done
 # set up rules
 sudo iptables -t nat -A PREROUTING -p udp -m udp --dport "${public_port}" -j DNAT --to-destination "${container_ip}:${INTERNAL_PORT}"
 sudo iptables -t nat -A POSTROUTING -d "${container_ip}/32" -p udp -m udp --dport "${INTERNAL_PORT}" -j SNAT --to-source "${VPN_CONTAINER_GW}"
+
+echo "ok:team-$N"
