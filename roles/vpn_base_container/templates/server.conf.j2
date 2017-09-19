@@ -9,7 +9,7 @@ dh dh{{ dh_bits }}.pem
 
 server {{ vpn_client_net | ipaddr('network') }} {{ vpn_client_net | ipaddr('netmask') }}
 
-keepalive 120 240
+keepalive 10 60
 
 user nobody
 group nogroup
