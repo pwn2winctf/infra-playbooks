@@ -1,0 +1,14 @@
+- hosts: challenges
+  become: yes
+  gather_facts: no
+  roles:
+    - role: ansible_prereq
+
+    - role: lxd_host
+      lxdbr_create: no
+
+    - role: lxd_install_image
+      name: "{{ chall_image }}"
+      when: chall_image is defined
+
+    - role: chall_host

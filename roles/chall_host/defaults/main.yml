@@ -1,0 +1,3 @@
+chall_user: "ubuntu"
+chall_group: "ubuntu"
+home_dir: "/home/ubuntu"

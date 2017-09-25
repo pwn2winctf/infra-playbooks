@@ -1,0 +1,10 @@
+- name: Install start/stop container scripts
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ home_dir }}/{{ item }}"
+    mode: 0755
+    owner: "{{ chall_user }}"
+    group: "{{ chall_group }}"
+  with_items:
+    - start_container
+    - stop_container
