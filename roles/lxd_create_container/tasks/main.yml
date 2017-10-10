@@ -5,7 +5,7 @@
     source:
       type: image
       mode: pull
-      server: https://images.linuxcontainers.org
-      protocol: lxd
-      alias: ubuntu/xenial/amd64
+      server: "https://cloud-images.ubuntu.com/releases"
+      protocol: "simplestreams"
+      alias: "16.04"
     wait_for_ipv4_addresses: yes
