@@ -1,6 +1,10 @@
-- name: Add LXD stable PPA
-  apt_repository:
-    repo: 'ppa:ubuntu-lxc/lxd-stable'
+#- name: Add LXD stable PPA
+#  apt_repository:
+#    repo: 'ppa:ubuntu-lxc/lxd-stable'
+
+- name: LXD gambiarra
+  shell: apt-get install -t xenial-backports lxd lxd-client
+  when: ansible_distribution_release == 'xenial'
 
 - name: Install packages
   apt:
@@ -16,6 +20,8 @@
     creates: "/var/lib/lxd/disks/default.img"
     command: lxd init
     responses:
+      Would you like to use LXD clustering: "no"
+      Would you like to connect to a MAAS server: "no"
       Do you want to configure a new storage pool: "yes"
       Name of the new storage pool: "default"
       Name of the storage backend to use: "zfs"
@@ -24,8 +30,10 @@
       Size in GB of the new loop device: "{{ zfs_pool_size }}"
       Would you like LXD to be available over the network: "no"
       Would you like stale cached images to be updated automatically: "yes"
-      Would you like to create a new network bridge: "{{ lxdbr_create | bool | ternary('yes', 'no') }}"
+      Would you like to create a new: "{{ lxdbr_create | bool | ternary('yes', 'no') }}"
+      Would you like to configure LXD: "no"
       What should the new bridge be called: "lxdbr0"
       What IPv4 address should be used: "{{ lxdbr_net }}"
       Would you like LXD to NAT IPv4 traffic on your bridge: "no"
       What IPv6 address should be used: "none"
+      preseed to be printed: "no"

@@ -9,6 +9,6 @@
       lxdbr_net: "{{ vpn_container_net }}"
 
     - role: lxd_install_image
-      name: "vpn-base-container"
+      container_name: "vpn-base-container"
 
     - role: vpn_host

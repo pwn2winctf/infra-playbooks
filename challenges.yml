@@ -8,7 +8,7 @@
       lxdbr_create: no
 
     - role: lxd_install_image
-      name: "{{ chall_image }}"
+      container_name: "{{ chall_image }}"
       when: chall_image is defined
 
     - role: chall_host

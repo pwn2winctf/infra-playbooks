@@ -1,7 +1,7 @@
 - hosts: localhost
   roles:
     - role: lxd_create_container
-      name: "vpn-base-container"
+      container_name: "vpn-base-container"
 
 - hosts: vpn-base-container
   gather_facts: no
@@ -12,4 +12,4 @@
 - hosts: localhost
   roles:
     - role: lxd_publish_image
-      name: "vpn-base-container"
+      container_name: "vpn-base-container"
